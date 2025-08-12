@@ -12,6 +12,7 @@ TL;DR (pick one)
 1. Use a fresh Ubuntu 20.04+ server (most docs reference Linux; verifier also supports mac/windows). 
 
 2. Install common tools (example for Ubuntu):
+
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential git curl jq wget
 
@@ -21,6 +22,7 @@ A)  Verifier node — quick (recommended first step)
 Verifier nodes are lightweight and intended to verify proofs and earn credits. There are one-line installers for Linux/Mac/Windows.
 
 Linux (TL;DR):
+
 # replace 0x-... with your reward address (from your wallet)
 curl -L https://github.com/cysic-labs/cysic-phase3/releases/download/v1.0.0/setup_linux.sh > ~/setup_linux.sh && bash ~/setup_linux.sh 0x-FILL-YOUR-REWARD-ADDRESS
 cd ~/cysic-verifier && bash start.sh
@@ -34,6 +36,7 @@ ETH proof: ~32 GB RAM, 8 cores, GPU ≥ 16 GB VRAM.
 The prover uses a setup script that needs your reward address and an RPC URL (e.g., Alchemy).
 
 Linux (TL;DR):
+
 # replace address and RPC
 curl -L https://github.com/cysic-labs/cysic-phase3/releases/download/v1.0.0/setup_prover.sh > ~/setup_prover.sh && bash ~/setup_prover.sh 0x-FILL-YOUR-REWARD-ADDRESS YOUR_RPC_URL
 cd ~/cysic-prover && bash start.sh
@@ -51,6 +54,7 @@ Storage: 200 GB SSD (500 GB recommended)
 Ports: 26657 (RPC), 26656 (P2P), 8545/8546 (eth RPC/WebSocket), 1317 (REST), 9090 (gRPC), 6065 (metrics). 
 
 B. Install Docker & Docker Compose:
+
 # Ubuntu example
 sudo apt update
 sudo apt install -y ca-certificates curl gnupg lsb-release
@@ -67,6 +71,7 @@ sudo usermod -aG docker $USER
 Log out/in or newgrp docker to pick up docker group.
 
 C. Download config & snapshot (official):
+
 mkdir -p /data && cd /data
 wget https://statics.prover.xyz/testnet_node.tar.gz
 tar -zxvf testnet_node.tar.gz
@@ -77,6 +82,7 @@ tar -zxvf data.tar.gz -C node/cysicmintd
 
 D. Docker Compose example:
 Edit docker-compose.yml to match this example (the docs show one similar to below). Pay attention to volumes, ports and entrypoint:
+
 version: "3"
 services:
   node:
@@ -110,18 +116,21 @@ E. Whitelist requirement — IMPORTANT
 Before starting you must send the node’s exit IP address to the Cysic team so they can whitelist your validator (permissioning applies in testnet phases). Do that before docker-compose up. 
 
 F. Start the node:
+
 docker-compose pull
 docker-compose up -d node
 # follow logs
 docker-compose logs -f node
 
 check node health:
+
 curl http://localhost:26657/status
 curl http://localhost:26657/abci_info
 
 (If you used snapshot, sync should be fast.) 
 
 G. Create/generate validator key inside container
+
 docker exec -it node bash
 # inside container
 ./cysicmintd keys add validator-xxx --home ./cysicmint --keyring-backend test
@@ -134,6 +143,7 @@ Save the mnemonic printed during keys add securely — it’s the only recovery 
 
 
 H. Stake / create validator (example)
+
 (Replace amounts and moniker as appropriate.)
 ./cysicmintd tx staking create-validator \
   --amount=100000000000000000000CGT \
